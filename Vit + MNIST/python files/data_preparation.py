@@ -1,6 +1,7 @@
 import torch
 from torchvision import datasets, transforms
 from torch.utils.data import Subset, DataLoader
+import pickle
 
 # Code related to data loading, splitting, and transformation
 
@@ -56,3 +57,21 @@ def prepare_data():
     #print(f"Open unlabelled train data size: {len(open_unlabelled_loader_test)}")
 
     return proprietary_loader_train, proprietary_loader_test, open_subset_train, open_subset_test
+
+
+# Save dataset using pickle
+def save_dataset(dataset, path):
+    with open(path, 'wb') as f:
+        pickle.dump(dataset, f)
+    
+# Load dataset using pickle
+def load_dataset(path):
+    with open(path, 'rb') as f:
+        dataset = pickle.load(f)
+    return dataset
+
+# Create DataLoader objects for the DataSet
+def create_dataloader(dataset, batch_size=64, shuffle=True):
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=shuffle)
+    print(f"Open dataloader size: {len(dataloader)}")
+    return dataloader
