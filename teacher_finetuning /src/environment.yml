@@ -1,0 +1,20 @@
+name: semester_project
+channels:
+  - pytorch
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.8
+  - numpy
+  - pandas
+  - scipy
+  - scikit-learn
+  - pip
+  - pip:
+      - wandb==0.17.3
+      - numpy==1.23.3
+      - open-clip-torch==2.0.2
+      - huggingface-hub
+      - torch==1.12.1
+      - torchvision==0.13.1
+      - tqdm==4.64.1                                         
