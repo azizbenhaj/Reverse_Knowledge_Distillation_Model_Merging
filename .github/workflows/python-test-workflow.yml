@@ -34,9 +34,10 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install flake8 pytest
           conda env update --name semester_project --file environment.yml || conda env create --name semester_project --file environment.yml
-          conda init
-          conda activate semester_project
 
-      - name: Test with pytest
+      - name: Activate Conda environment and run tests
         run: |
+          echo "Activating Conda environment..."
+          source /usr/share/miniconda/etc/profile.d/conda.sh
+          conda activate semester_project
           pytest
