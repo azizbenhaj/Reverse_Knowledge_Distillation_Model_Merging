@@ -2,22 +2,25 @@ name: Python Test Workflow
 
 on:
   push:
-    branches:
-      - main, master
+    branches: [ "main" ]
   pull_request:
-    branches:
-      - main, master
+    branches: [ "main" ]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        python-version: [3.7, 3.8, 3.9, 3.10]
+        python-version: ["3.9", "3.10", "3.11"]
 
     steps:
       - name: Check out repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v3
+        with:
+          python-version: ${{ matrix.python-version }}
 
       - name: Set up Conda
         uses: conda-incubator/setup-miniconda@v2
@@ -29,5 +32,11 @@ jobs:
 
       - name: Install dependencies from environment.yml
         run: |
+          python -m pip install --upgrade pip
+          python -m pip install flake8 pytest
           conda env create -f environment.yml
           conda activate semester_project
+
+      - name: Test with pytest
+        run: |
+          pytest
