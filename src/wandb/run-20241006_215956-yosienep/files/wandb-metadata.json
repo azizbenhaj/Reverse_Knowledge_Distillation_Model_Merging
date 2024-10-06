@@ -1,0 +1,37 @@
+{
+    "os": "macOS-14.5-arm64-arm-64bit",
+    "python": "3.11.5",
+    "heartbeatAt": "2024-10-06T19:59:58.004150",
+    "startedAt": "2024-10-06T19:59:56.725295",
+    "docker": null,
+    "cuda": null,
+    "args": [],
+    "state": "running",
+    "program": "/Users/ahmedazizbenhajhmidagmail.com/Desktop/master3/semester project/Reverse_Knowledge_Distillation_Model_Merging/teacher_finetuning /src/finetune.py",
+    "codePathLocal": "finetune.py",
+    "codePath": "teacher_finetuning /src/finetune.py",
+    "git": {
+        "remote": "git@github.com:azizbenhaj/Reverse_Knowledge_Distillation_Model_Merging.git",
+        "commit": "4e48face461073f61d87ad8f4fb75bc2f7699ed5"
+    },
+    "email": null,
+    "root": "/Users/ahmedazizbenhajhmidagmail.com/Desktop/master3/semester project/Reverse_Knowledge_Distillation_Model_Merging",
+    "host": "Ahmeds-MacBook-Pro-2.local",
+    "username": "ahmedazizbenhajhmidagmail.com",
+    "executable": "/Users/ahmedazizbenhajhmidagmail.com/anaconda3/bin/python",
+    "cpu_count": 11,
+    "cpu_count_logical": 11,
+    "disk": {
+        "/": {
+            "total": 460.4317207336426,
+            "used": 244.04519653320312
+        }
+    },
+    "gpuapple": {
+        "type": "Apple M3 Pro",
+        "vendor": "sppci_vendor_Apple"
+    },
+    "memory": {
+        "total": 18.0
+    }
+}

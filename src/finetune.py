@@ -151,20 +151,21 @@ def finetune(args):
 if __name__ == '__main__':
     data_location = 'datasets_directory' # The root directory for the datasets
     models = ['ViT-B-16'] #['ViT-B-32', 'ViT-B-16', 'ViT-L-14']
-    datasets = ['STL10']#, 'MNIST'] #['Cars', 'DTD', 'EuroSAT', 'GTSRB', 'MNIST', 'RESISC45', 'SUN397', 'SVHN']
+    datasets = ['STL10', 'DTD', 'MNIST', 'SVHN', 'CIFAR100', 'CIFAR10']#, 'MNIST'] #['Cars', 'DTD', 'EuroSAT', 'GTSRB', 'MNIST', 'RESISC45', 'SUN397', 'SVHN']
     epochs = {
-        'Cars': 1, #35, #still have code issues with Cars: TODO later on
-        'DTD': 1, #76,
+        'DTD': 76, #76,
+        'CIFAR100': 10, #I have to find the best number of epochs
+        'CIFAR10': 10, #I have to find the best number of epochs
+        'STL10': 10, #I have to find the best number of epochs
+        'SVHN': 4, #4,
+        'MNIST': 5, #5,
+        
         'EuroSAT': 12,
         'GTSRB': 11,
-        'MNIST': 1, #5,
         'RESISC45': 15,
         'SUN397': 14,
-        'SVHN': 1, #4,
         'ImageNet': 4,
-        'CIFAR100': 1, #I have to find the best number of epochs
-        'CIFAR10': 1, #I have to find the best number of epochs
-        'STL10': 3, #I have to find the best number of epochs
+        'Cars': 1, #35, #still have code issues with Cars: TODO later on
     }
 
     labels_name = {
