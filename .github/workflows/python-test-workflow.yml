@@ -21,12 +21,21 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
 
-      - name: Install dependencies
+      - name: Set up Conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          python-version: ${{ matrix.python-version }}
+          auto-update-conda: true
+          environment-file: environment.yml 
+          activate-environment: semester_project
+
+      - name: Install dependencies from environment.yml
         run: |
           python -m pip install --upgrade pip
-          python -m pip install -r <(cat environment.yml | grep -v '^\s*#' | sed -n 's/.*://p') 
+          python -m pip install flake8 pytest
+          conda env create -f environment.yml
+          conda activate semester_project
 
       - name: Test with pytest
         run: |
           pytest
-  
