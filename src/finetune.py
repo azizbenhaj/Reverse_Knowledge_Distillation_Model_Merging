@@ -154,14 +154,14 @@ def finetune(args):
         image_encoder.save(ft_path)
 
     # Evaluate
-    image_encoder = model.module.image_encoder
+    image_encoder = model.image_encoder
     evaluate(image_encoder, args)
 
-    if args.save is not None:
+    """if args.save is not None:
         zs_path = os.path.join(ckpdir, 'zeroshot.pt')  
         ft_path = os.path.join(ckpdir, 'finetuned.pt')
         image_encoder.save(ft_path)
-        return zs_path, ft_path
+        return zs_path, ft_path"""
 
 
 if __name__ == '__main__':
