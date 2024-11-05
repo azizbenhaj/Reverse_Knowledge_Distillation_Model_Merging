@@ -176,7 +176,7 @@ def finetune(args):
 if __name__ == '__main__':
     data_location = 'datasets_directory' # The root directory for the datasets
     models = ['ViT-B-16', 'ViT-B-32', 'ViT-L-14']
-    datasets = ['MNIST', 'SVHN', 'DTD', 'GTSRB', 'SUN397', 'RESISC45', 'Cars', 'EuroSAT']
+    datasets = ['MNIST', 'SVHN', 'DTD', 'GTSRB', 'SUN397', 'RESISC45', 'EuroSAT', 'Cars']
 
     epochs = {
         'DTD': 1,#76,
