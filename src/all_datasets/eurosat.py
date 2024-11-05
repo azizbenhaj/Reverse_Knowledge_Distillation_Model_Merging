@@ -20,6 +20,7 @@ class EuroSAT:
 
         # Split the train dataset into three subsets
         finetune_train_size = int(0.04 * len(train_dataset))
+        print(0.04)
         distillation_train_size = int(0.04 * len(train_dataset))
         merging_train_size = len(train_dataset) - finetune_train_size - distillation_train_size
 
