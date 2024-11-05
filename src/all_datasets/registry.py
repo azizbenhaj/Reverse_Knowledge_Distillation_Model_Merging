@@ -10,7 +10,7 @@ from all_datasets.cars import Cars
 from all_datasets.cifar10 import CIFAR10
 from all_datasets.cifar100 import CIFAR100
 from all_datasets.dtd import DTD
-from all_datasets.eurosat import EuroSAT, EuroSATVal
+from all_datasets.eurosat import EuroSAT
 from all_datasets.gtsrb import GTSRB
 from all_datasets.imagenet import ImageNet
 from all_datasets.mnist import MNIST
