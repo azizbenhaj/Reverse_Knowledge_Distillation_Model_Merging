@@ -22,8 +22,6 @@ class PytorchStanfordCars(VisionDataset):
         target_transform: Optional[Callable] = None,
         download: bool = False,
     ) -> None:
-        
-
         super().__init__(root, transform=transform, target_transform=target_transform)
 
         self._split = verify_str_arg(split, "split", ("train", "test"))
@@ -42,7 +40,7 @@ class PytorchStanfordCars(VisionDataset):
             self.download()
 
         if not self._check_exists():
-            raise RuntimeError("Dataset not found. You can set download=True to download it.")
+            raise RuntimeError("Dataset not found in the specified path. Please check your path configuration.")
 
         # Load dataset
         self._samples = [
@@ -57,11 +55,9 @@ class PytorchStanfordCars(VisionDataset):
         self.class_to_idx = {cls: i for i, cls in enumerate(self.classes)}
 
     def _check_exists(self) -> bool:
-        # Check if all necessary files and directories are present
-        return (
-            self._annotations_mat_path.exists() and
-            self._images_base_path.is_dir()
-        )
+        # Check if the annotations file and image directory are present
+        print(f"Checking existence of: {self._annotations_mat_path} and {self._images_base_path}")
+        return self._annotations_mat_path.exists() and self._images_base_path.is_dir()
     
     def __len__(self) -> int:
         return len(self._samples)
@@ -106,11 +102,13 @@ class PytorchStanfordCars(VisionDataset):
             )
 
 class Cars:
-    def __init__(self, preprocess, location="/mnt/lts4/scratch/data", batch_size=64, num_workers=16):
+    def __init__(self, preprocess, location="/mnt/lts4/scratch/data/stanford_cars", batch_size=64, num_workers=16):
         # Data loading code
 
-        train_dataset = PytorchStanfordCars(location, 'train', preprocess)
-        test_dataset = PytorchStanfordCars(location, 'test', preprocess)
+        train_dataset = PytorchStanfordCars(location, 'train', preprocess, download=False)
+        test_dataset = PytorchStanfordCars(location, 'test', preprocess, download=False)
+        
+        # Rest of your splitting and loading code remains unchanged
 
         # Split the train dataset into three subsets
         finetune_train_size = int(0.4 * len(train_dataset))
