@@ -13,7 +13,7 @@ from modeling import ImageClassifier
 from all_datasets.registry import get_dataset
 
 
-def eval_single_dataset(image_encoder, dataset_name, data_loader, num_classes, args):
+def eval_single_dataset(image_encoder, dataset_name, data_loader, args):
     classification_head = get_classification_head(args, dataset_name)
     model = ImageClassifier(image_encoder, classification_head)
 
@@ -57,7 +57,7 @@ def eval_single_dataset(image_encoder, dataset_name, data_loader, num_classes, a
     
     return metrics
 
-def evaluate(image_encoder, data_loader, num_classes, args):
+def evaluate(image_encoder, data_loader, args):
     if args.eval_datasets is None:
         return
     info = vars(args)
@@ -65,7 +65,7 @@ def evaluate(image_encoder, data_loader, num_classes, args):
     for i, dataset_name in enumerate(args.eval_datasets):
         print(f'Evaluating {args.model} on', dataset_name)
 
-        results = eval_single_dataset(image_encoder, dataset_name, data_loader, num_classes, args)
+        results = eval_single_dataset(image_encoder, dataset_name, data_loader, args)
 
         if 'top1' in results:
             print(f"{dataset_name} Top-1 accuracy: {results['top1']:.4f}")

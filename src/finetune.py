@@ -19,7 +19,7 @@ def finetune(args):
 
     # Check if checkpoints already exist
     zs_path = os.path.join(ckpdir, f'Before_Finetuning_{args.model}.pt')  
-    ft_path = os.path.join(ckpdir, f'Finetuning_{args.model}_{args.epochs}.pt')
+    ft_path = os.path.join(ckpdir, f'Finetuning_{args.model}_epochs_{args.epochs}.pt')
     if os.path.exists(zs_path) and os.path.exists(ft_path):
         print(f'Skipping fine-tuning because {ft_path} exists.')
         return zs_path, ft_path
@@ -150,7 +150,7 @@ def finetune(args):
 
     print("saving finetuned model ...")
     if args.save is not None: 
-        ft_path = os.path.join(ckpdir, f'Finetuning_{args.model}_{args.epochs}.pt')
+        ft_path = os.path.join(ckpdir, f'Finetuning_{args.model}_epochs_{args.epochs}.pt')
         image_encoder.save(ft_path)
 
     # Evaluate
@@ -162,9 +162,8 @@ def finetune(args):
     image_encoder = model.image_encoder
     num_batches = len(dataset.test_loader)
     print(num_batches)
-    num_classes = len(dataset.classnames)
     data_loader = get_dataloader(dataset, is_train=False, args=args, image_encoder=None)
-    evaluate(image_encoder, data_loader, num_classes, args)
+    evaluate(image_encoder, data_loader, args)
 
     """if args.save is not None:
         zs_path = os.path.join(ckpdir, 'zeroshot.pt')  
