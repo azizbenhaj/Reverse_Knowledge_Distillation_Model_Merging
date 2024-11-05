@@ -15,7 +15,7 @@ from all_datasets.common import get_dataloader, maybe_dictionarize
 def finetune(args):
     train_dataset = args.train_dataset
     base_dataset_name = train_dataset.split('Val')[0]
-    ckpdir = os.path.join(args.save, base_dataset_name)#where to save models
+    ckpdir = os.path.join(args.save, base_dataset_name) #where to save models
 
     # Check if checkpoints already exist
     zs_path = os.path.join(ckpdir, f'Before_Finetuning_{args.model}.pt')  
@@ -170,14 +170,14 @@ if __name__ == '__main__':
     datasets = ['MNIST', 'SVHN', 'DTD', 'GTSRB', 'SUN397', 'RESISC45', 'Cars', 'EuroSAT']
 
     epochs = {
-        'DTD': 76,
-        'SVHN': 4,
-        'MNIST': 5,
-        'EuroSAT': 12,
-        'GTSRB': 11,
-        'RESISC45': 15,
-        'SUN397': 14,
-        'Cars': 35,
+        'DTD': 1,#76,
+        'SVHN': 1,#4,
+        'MNIST': 1,#5,
+        'EuroSAT': 1,#12,
+        'GTSRB': 1,#11,
+        'RESISC45': 1,#15,
+        'SUN397': 1,#14,
+        'Cars': 1,#35,
     }
 
     labels_name = {
@@ -201,7 +201,7 @@ if __name__ == '__main__':
             args.epochs = epochs[dataset]
             args.data_location = data_location
             args.train_dataset = dataset + 'Val'
-            args.eval_datasets = dataset
+            args.eval_datasets = [dataset]
             args.pretrained = 'laion400m_e32'
             args.batch_size = 128
             args.model = model
