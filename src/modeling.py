@@ -10,25 +10,16 @@ class ImageEncoder(torch.nn.Module):
         super().__init__()
 
         print(f'Loading {args.model} pre-trained weights.')
-        if args.pretrained is not None:
-            name = args.model
-            pretrained = args.pretrained
-            print(f"Pretrained weights found: {pretrained}")
+        if '__pretrained__' in args.model:
+            name, pretrained = args.model.split('__pretrained__')
         else:
             name = args.model
             pretrained = 'openai'
-            print("Pretrained weights not found: openai")
-
-        print("Creating model from pretrained weights")
         self.model, self.train_preprocess, self.val_preprocess = open_clip.create_model_and_transforms(
-            name, pretrained=pretrained, 
-            cache_dir=args.openclip_cachedir) # Directory for caching models from OpenCLIP
+            name, pretrained=pretrained, cache_dir=args.openclip_cachedir)
         
-        self.cache_dir = args.cache_dir # Directory for caching features and encoder
+        self.cache_dir = args.cache_dir
 
-        # Without keep_lang: If you’re working with a vision-language model (like CLIP) that uses a transformer for the text part, 
-        # but you’re only interested in the image processing part, you might set keep_lang=False to remove the transformer 
-        # and only use the image model.
         if not keep_lang and hasattr(self.model, 'transformer'):
             delattr(self.model, 'transformer')
 
@@ -43,23 +34,18 @@ class ImageEncoder(torch.nn.Module):
         print(f'Saving image encoder to {filename}')
         utils.torch_save(self, filename)
 
-    @staticmethod
-    def load_model(filename):
-        print(f'Loading image encoder from {filename}')
-        return torch.load(filename)
-
     @classmethod
     def load(cls, model_name, filename):
         print(f'Loading image encoder from {filename}')
         state_dict = torch.load(filename)
         return cls.load(model_name, state_dict)
 
-    # TO BE CHECKED !!!
     @classmethod
-    def load_from_state_dict(cls, state_dict):
+    def load_from_state_dict(cls, model_name, state_dict):
         self.model, self.train_preprocess, self.val_preprocess = open_clip.create_model_and_transforms(
             name, pretrained=pretrained, cache_dir=args.openclip_cachedir)
         self.model.load_from_state_dict(state_dict)
+        
 
 
 
