@@ -1,15 +1,14 @@
-import csv
 import os
-import pathlib
-from typing import Any, Callable, Dict, List, Optional, Tuple
-
-import numpy as np
+import csv
 import PIL
 import torch
+import pathlib
+import numpy as np
+from torch.utils.data import random_split
 from torchvision.datasets.folder import make_dataset
-from torchvision.datasets.utils import (download_and_extract_archive,
-                                        verify_str_arg)
 from torchvision.datasets.vision import VisionDataset
+from typing import Any, Callable, Dict, List, Optional, Tuple
+from torchvision.datasets.utils import (download_and_extract_archive, verify_str_arg)
 
 def find_classes(directory: str) -> Tuple[List[str], Dict[str, int]]:
     """Finds the class folders in a dataset.
@@ -120,42 +119,36 @@ class PyTorchGTSRB(VisionDataset):
                 md5="fe31e9c9270bbcd7b84b7f21a9d9d9e5",
             )
 
-
 class GTSRB:
-    def __init__(self,
-                 preprocess,
-                 location=os.path.expanduser('~/data'),
-                 batch_size=128,
-                 num_workers=16):
+    def __init__(self, preprocess, location=os.path.expanduser('~/data'), batch_size=128, num_workers=16):
 
         # to fit with repo conventions for location
-        self.train_dataset = PyTorchGTSRB(
-            root=location,
-            download=True,
-            split='train',
-            transform=preprocess
-        )
+        train_dataset = PyTorchGTSRB(root=location, download=True, split='train', transform=preprocess)
+        test_dataset = PyTorchGTSRB(root=location, download=True, split='test', transform=preprocess)
 
-        self.train_loader = torch.utils.data.DataLoader(
-            self.train_dataset,
-            batch_size=batch_size,
-            shuffle=True,
-            num_workers=num_workers
-        )
+        # Split the train dataset into three subsets
+        finetune_train_size = int(0.4 * len(train_dataset)) 
+        distillation_train_size = int(0.4 * len(train_dataset)) 
+        merging_train_size = len(train_dataset) - finetune_train_size - distillation_train_size
 
-        self.test_dataset = PyTorchGTSRB(
-            root=location,
-            download=True,
-            split='test',
-            transform=preprocess
-        )
+        # Split the test dataset into three subsets
+        finetune_test_size = int(0.4 * len(test_dataset))
+        distillation_test_size = int(0.4 * len(test_dataset)) 
+        merging_test_size = len(test_dataset) - finetune_test_size - distillation_test_size
 
-        self.test_loader = torch.utils.data.DataLoader(
-            self.test_dataset,
-            batch_size=batch_size,
-            shuffle=False,
-            num_workers=num_workers
-        )
+        finetune_train_set, self.distillation_train_set, self.merging_train_set = random_split(
+            train_dataset, [finetune_train_size, distillation_train_size, merging_train_size])
+
+        finetune_test_set, self.distillation_test_set, self.merging_test_set = random_split(
+            test_dataset, [finetune_test_size, distillation_test_size, merging_test_size])
+        
+        self.finetune_set = torch.utils.data.ConcatDataset([finetune_train_set, finetune_test_set])
+        
+        self.train_loader = torch.utils.data.DataLoader(self.finetune_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+        self.distillation_train_loader = torch.utils.data.DataLoader(self.distillation_train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+        self.merging_train_loader = torch.utils.data.DataLoader(self.merging_train_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+        self.distillation_test_loader = torch.utils.data.DataLoader(self.distillation_test_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
+        self.merging_test_loader = torch.utils.data.DataLoader(self.merging_test_set, batch_size=batch_size, shuffle=True, num_workers=num_workers)
 
         # from https://github.com/openai/CLIP/blob/e184f608c5d5e58165682f7c332c3a8b4c1545f2/data/prompts.md
         self.classnames = [
@@ -203,3 +196,15 @@ class GTSRB:
             'white circle with gray strike bar indicating no passing for cars has ended',
             'white circle with gray strike bar indicating no passing for trucks has ended',
         ]
+
+    def save_subsets(self,location):
+        # Create dataset directories
+        split_save_dir = os.path.join(location, 'Subsets', 'GTSRB')
+        os.makedirs(split_save_dir, exist_ok=True)
+
+        # Save the split datasets
+        torch.save(self.finetune_set, os.path.join(split_save_dir, 'finetune_set.pt'))
+        torch.save(self.distillation_train_set, os.path.join(split_save_dir, 'distillation_train_set.pt'))
+        torch.save(self.merging_train_set, os.path.join(split_save_dir, 'merging_train_set.pt'))
+        torch.save(self.distillation_test_set, os.path.join(split_save_dir, 'distillation_test_set.pt'))
+        torch.save(self.merging_test_set, os.path.join(split_save_dir, 'merging_test_set.pt'))
