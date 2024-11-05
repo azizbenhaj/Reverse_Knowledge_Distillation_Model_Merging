@@ -101,7 +101,7 @@ def finetune(args):
     if args.save is not None:
         os.makedirs(ckpdir, exist_ok=True)
         model_path = os.path.join(ckpdir, f'Before_Finetuning_{args.model}.pt')
-        model.module.image_encoder.save(model_path)
+        model.image_encoder.save(model_path)
 
     print("training ...")
     for epoch in tqdm(range(args.epochs), desc='Training Epochs'):
