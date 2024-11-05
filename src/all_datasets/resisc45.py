@@ -52,15 +52,15 @@ class RESISC45:
         train_dataset, test_dataset = random_split(full_dataset, [train_size, test_size])
 
         # Further split the train dataset into finetune (40%), distillation (40%), and merging (20%) subsets
-        finetune_train_size = int(0.4 * len(train_dataset))
-        distillation_train_size = int(0.4 * len(train_dataset))
+        finetune_train_size = int(0.04 * len(train_dataset))
+        distillation_train_size = int(0.04 * len(train_dataset))
         merging_train_size = len(train_dataset) - finetune_train_size - distillation_train_size
         finetune_train_set, self.distillation_train_set, self.merging_train_set = random_split(
             train_dataset, [finetune_train_size, distillation_train_size, merging_train_size])
 
         # Further split the test dataset into finetune (40%), distillation (40%), and merging (20%) subsets
-        finetune_test_size = int(0.4 * len(test_dataset))
-        distillation_test_size = int(0.4 * len(test_dataset))
+        finetune_test_size = int(0.04 * len(test_dataset))
+        distillation_test_size = int(0.04 * len(test_dataset))
         merging_test_size = len(test_dataset) - finetune_test_size - distillation_test_size
         finetune_test_set, self.distillation_test_set, self.merging_test_set = random_split(
             test_dataset, [finetune_test_size, distillation_test_size, merging_test_size])
