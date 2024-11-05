@@ -47,8 +47,6 @@ class ImageEncoder(torch.nn.Module):
         self.model.load_from_state_dict(state_dict)
         
 
-
-
 class ClassificationHead(torch.nn.Linear):
     def __init__(self, normalize, weights, biases=None):
         output_size, input_size = weights.shape
@@ -95,7 +93,7 @@ class ImageClassifier(torch.nn.Module):
     def forward(self, inputs):
         features = self.image_encoder(inputs)
         outputs = self.classification_head(features)
-        print("image_encoder" + str(features.shape) + "classification_head" + str(outputs.shape))
+        #print("image_encoder" + str(features.shape) + "classification_head" + str(outputs.shape))
         return outputs
 
     def __call__(self, inputs):

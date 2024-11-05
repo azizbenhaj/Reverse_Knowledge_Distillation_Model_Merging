@@ -170,14 +170,14 @@ if __name__ == '__main__':
     datasets = ['MNIST', 'SVHN', 'DTD', 'GTSRB', 'SUN397', 'RESISC45', 'EuroSAT', 'Cars']
 
     epochs = {
-        'DTD': 1,#76,
-        'SVHN': 1,#4,
-        'MNIST': 1,#5,
-        'EuroSAT': 1,#12,
-        'GTSRB': 1,#11,
-        'RESISC45': 1,#15,
-        'SUN397': 1,#14,
-        'Cars': 1,#35,
+        'DTD': 76,
+        'SVHN': 4,
+        'MNIST': 5,
+        'EuroSAT': 12,
+        'GTSRB': 11,
+        'RESISC45': 15,
+        'SUN397': 14,
+        'Cars': 35,
     }
 
     labels_name = {
