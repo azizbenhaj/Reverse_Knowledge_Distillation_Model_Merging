@@ -68,7 +68,7 @@ def finetune(args):
     print("Freezing head ...")
     model.freeze_head()
 
-    preprocess_fn = model.train_preproces
+    preprocess_fn = model.train_preprocess
 
     dataset = get_dataset(
         train_dataset,

@@ -95,6 +95,7 @@ class ImageClassifier(torch.nn.Module):
     def forward(self, inputs):
         features = self.image_encoder(inputs)
         outputs = self.classification_head(features)
+        print("image_encoder" + str(features.shape) + "classification_head" + str(outputs.shape))
         return outputs
 
     def __call__(self, inputs):
