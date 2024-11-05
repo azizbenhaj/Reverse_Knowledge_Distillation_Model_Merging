@@ -42,6 +42,11 @@ def parse_arguments():
         help="The type of model (e.g. RN50, ViT-B-32).",
     )
     parser.add_argument(
+        "--pretrained",
+        type=int,
+        default=None,
+    )
+    parser.add_argument(
         "--batch-size",
         type=int,
         default=128,
@@ -98,8 +103,34 @@ def parse_arguments():
         default=None, #'/gscratch/efml/gamaga/.cache/open_clip',
         help='Directory for caching models from OpenCLIP'
     )
+    parser.add_argument(
+        "--device",
+        type=str,
+        default="cuda",
+        help='Device type'
+    )
+    parser.add_argument(
+        "--labels_name",
+        type=str,
+        default="labels",
+        help='labels name'
+    )
+    parser.add_argument(
+        "--lambda_param",
+        type=float,
+        default=0.5,
+        help='lambda parameter'
+    )
+    parser.add_argument(
+        "--T",
+        type=float,
+        default=2,
+        help='temperature'
+    )
     parsed_args = parser.parse_args()
-    parsed_args.device = "cuda" if torch.cuda.is_available() else "cpu"
+    parsed_args.device = torch.device("cuda" if torch.cuda.is_available() 
+                    else "mps" if torch.backends.mps.is_available() 
+                    else "cpu")
     
     if parsed_args.load is not None and len(parsed_args.load) == 1:
         parsed_args.load = parsed_args.load[0]

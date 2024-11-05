@@ -46,15 +46,16 @@ class ImageFolderWithPaths(datasets.ImageFolder):
             'image_paths': self.samples[index][0]
         }
 
-
-def maybe_dictionarize(batch):
+# Convert a batch to a dictionary format if it's not already in that format
+def maybe_dictionarize(batch, labels_name='labels'):
     if isinstance(batch, dict):
-        return batch
+        return batch  # Already a dictionary
 
+    # Convert batch to dictionary based on its length
     if len(batch) == 2:
-        batch = {'images': batch[0], 'labels': batch[1]}
+        batch = {'images': batch[0], labels_name: batch[1]}
     elif len(batch) == 3:
-        batch = {'images': batch[0], 'labels': batch[1], 'metadata': batch[2]}
+        batch = {'images': batch[0], labels_name: batch[1], 'metadata': batch[2]}
     else:
         raise ValueError(f'Unexpected number of elements: {len(batch)}')
 
