@@ -19,13 +19,13 @@ class EuroSAT:
         train_dataset, test_dataset = random_split(full_dataset, [train_size, test_size])
 
         # Split the train dataset into three subsets
-        finetune_train_size = int(0.4 * len(train_dataset))
-        distillation_train_size = int(0.4 * len(train_dataset))
+        finetune_train_size = int(0.04 * len(train_dataset))
+        distillation_train_size = int(0.04 * len(train_dataset))
         merging_train_size = len(train_dataset) - finetune_train_size - distillation_train_size
 
         # Split the test dataset into three subsets
-        finetune_test_size = int(0.4 * len(test_dataset))
-        distillation_test_size = int(0.4 * len(test_dataset))
+        finetune_test_size = int(0.04 * len(test_dataset))
+        distillation_test_size = int(0.04 * len(test_dataset))
         merging_test_size = len(test_dataset) - finetune_test_size - distillation_test_size
 
         finetune_train_set, self.distillation_train_set, self.merging_train_set = random_split(
