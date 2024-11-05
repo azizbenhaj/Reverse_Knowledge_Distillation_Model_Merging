@@ -13,7 +13,25 @@ from torch.utils.data import random_split, DataLoader, ConcatDataset, Dataset
 from torchvision.datasets.utils import download_and_extract_archive, download_url, verify_str_arg
 
 
+import os
+import torch
+import pathlib
+import numpy as np
+from PIL import Image
+import scipy.io as sio
+from torchvision.datasets import VisionDataset
+from typing import Any, Callable, Optional, Tuple
+
 class PytorchStanfordCars(VisionDataset):
+    """Stanford Cars dataset using local files.
+    
+    Args:
+        root (string): Root directory of dataset.
+        split (string, optional): The dataset split, supports "train" or "test".
+        transform (callable, optional): A function/transform that takes in a PIL image and returns a transformed version.
+        target_transform (callable, optional): A function/transform that takes in the target and transforms it.
+    """
+    
     def __init__(
         self,
         root: str,
@@ -24,10 +42,11 @@ class PytorchStanfordCars(VisionDataset):
     ) -> None:
         super().__init__(root, transform=transform, target_transform=target_transform)
 
-        self._split = verify_str_arg(split, "split", ("train", "test"))
+        self._split = split
         self._base_folder = pathlib.Path(root) / "stanford_cars"
         devkit = self._base_folder / "devkit"
 
+        # Define paths for annotations and images based on the split
         if self._split == "train":
             self._annotations_mat_path = devkit / "cars_train_annos.mat"
             self._images_base_path = self._base_folder / "cars_train"
@@ -35,35 +54,45 @@ class PytorchStanfordCars(VisionDataset):
             self._annotations_mat_path = devkit / "cars_test_annos.mat"
             self._images_base_path = self._base_folder / "cars_test"
 
-        # Skip download if dataset files are already available
+        # Check for existence of files or download if needed
         if download and not self._check_exists():
             self.download()
 
         if not self._check_exists():
-            raise RuntimeError("Dataset not found in the specified path. Please check your path configuration.")
+            raise RuntimeError("Dataset not found. Check your path configuration.")
 
-        # Load dataset
-        self._samples = [
-            (
-                str(self._images_base_path / annotation["fname"]),
-                annotation["class"] - 1,
-            )
-            for annotation in sio.loadmat(self._annotations_mat_path, squeeze_me=True)["annotations"]
-        ]
+        # Load and process dataset samples
+        annotations = sio.loadmat(self._annotations_mat_path, squeeze_me=True)
+        print(f"Keys in the annotations file: {annotations.keys()}")  # Debugging line to inspect keys
 
-        self.classes = sio.loadmat(str(devkit / "cars_meta.mat"), squeeze_me=True)["class_names"].tolist()
+        # Access the 'annotations' field and adjust based on actual structure
+        if "annotations" in annotations:
+            annotation_list = annotations["annotations"]
+            self._samples = [
+                (
+                    str(self._images_base_path / anno["fname"]),
+                    anno["class"] - 1,  # Adjust based on correct label field name if needed
+                )
+                for anno in annotation_list
+            ]
+        else:
+            raise ValueError("Unexpected .mat file structure; 'annotations' key not found.")
+
+        # Load class names
+        meta = sio.loadmat(devkit / "cars_meta.mat", squeeze_me=True)
+        self.classes = meta["class_names"].tolist()
         self.class_to_idx = {cls: i for i, cls in enumerate(self.classes)}
 
     def _check_exists(self) -> bool:
-        # Check if the annotations file and image directory are present
+        # Check for the existence of the annotations file and images directory
         print(f"Checking existence of: {self._annotations_mat_path} and {self._images_base_path}")
         return self._annotations_mat_path.exists() and self._images_base_path.is_dir()
-    
+
     def __len__(self) -> int:
         return len(self._samples)
 
     def __getitem__(self, idx: int) -> Tuple[Any, Any]:
-        """Returns pil_image and class_id for given index"""
+        """Returns transformed PIL image and class_id for a given index."""
         image_path, target = self._samples[idx]
         pil_image = Image.open(image_path).convert("RGB")
 
@@ -73,11 +102,11 @@ class PytorchStanfordCars(VisionDataset):
             target = self.target_transform(target)
         return pil_image, target
 
-
     def download(self) -> None:
         if self._check_exists():
             return
 
+        # Download devkit and training/testing sets based on the split
         download_and_extract_archive(
             url="https://ai.stanford.edu/~jkrause/cars/car_devkit.tgz",
             download_root=str(self._base_folder),
