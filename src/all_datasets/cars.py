@@ -105,8 +105,8 @@ class Cars:
     def __init__(self, preprocess, location=os.path.expanduser('~/data'), batch_size=64, num_workers=16):
         # Data loading code
 
-        train_dataset = PytorchStanfordCars("/mnt/lts4/scratch/data/stanford_cars", 'train', preprocess, download=False)
-        test_dataset = PytorchStanfordCars("/mnt/lts4/scratch/data/stanford_cars", 'test', preprocess, download=False)
+        train_dataset = PytorchStanfordCars("/mnt/lts4/scratch/data", 'train', preprocess, download=False)
+        test_dataset = PytorchStanfordCars("/mnt/lts4/scratch/data", 'test', preprocess, download=False)
         
         # Rest of your splitting and loading code remains unchanged
 
