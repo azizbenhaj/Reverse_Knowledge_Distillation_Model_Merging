@@ -13,28 +13,34 @@ from modeling import ImageClassifier
 from all_datasets.registry import get_dataset
 
 
-def eval_single_dataset(image_encoder, dataset_name, args):
+def eval_single_dataset(image_encoder, dataset_name, data_loader, num_classes, args):
     classification_head = get_classification_head(args, dataset_name)
     model = ImageClassifier(image_encoder, classification_head)
 
     model.eval()
 
-    dataset = get_dataset(
+    """dataset = get_dataset(
         dataset_name,
         model.val_preprocess,
         location=args.data_location,
         batch_size=args.batch_size
     )
     dataloader = get_dataloader(
-        dataset, is_train=False, args=args, image_encoder=None)
+        dataset, is_train=False, args=args, image_encoder=None)"""
     device = args.device
 
     with torch.no_grad():
         top1, correct, n = 0., 0., 0.
-        for i, data in enumerate(tqdm.tqdm(dataloader)):
-            data = maybe_dictionarize(data)
+        for i, data in enumerate(tqdm.tqdm(data_loader)):
+            data = maybe_dictionarize(data, args.labels_name)
             x = data['images'].to(device)
-            y = data['labels'].to(device)
+            y = data[args.labels_name]
+
+            if args.labels_name == 'car_models':
+                y = y.squeeze()
+                y = y.type(torch.int64)
+            
+            y = y.to(device)
 
             logits = utils.get_logits(x, model)
 
@@ -51,14 +57,15 @@ def eval_single_dataset(image_encoder, dataset_name, args):
     
     return metrics
 
-def evaluate(image_encoder, args):
+def evaluate(image_encoder, data_loader, num_classes, args):
     if args.eval_datasets is None:
         return
     info = vars(args)
+    info['device'] = str(info['device']) 
     for i, dataset_name in enumerate(args.eval_datasets):
-        print('Evaluating on', dataset_name)
+        print(f'Evaluating {args.model} on', dataset_name)
 
-        results = eval_single_dataset(image_encoder, dataset_name, args)
+        results = eval_single_dataset(image_encoder, dataset_name, data_loader, num_classes, args)
 
         if 'top1' in results:
             print(f"{dataset_name} Top-1 accuracy: {results['top1']:.4f}")

@@ -154,8 +154,17 @@ def finetune(args):
         image_encoder.save(ft_path)
 
     # Evaluate
+    #image_encoder = model.image_encoder
+    #evaluate(image_encoder, args)
+
+    # Evaluate
+    print("evaluating ...")
     image_encoder = model.image_encoder
-    evaluate(image_encoder, args)
+    num_batches = len(dataset.test_loader)
+    print(num_batches)
+    num_classes = len(dataset.classnames)
+    data_loader = get_dataloader(dataset, is_train=False, args=args, image_encoder=None)
+    evaluate(image_encoder, data_loader, num_classes, args)
 
     """if args.save is not None:
         zs_path = os.path.join(ckpdir, 'zeroshot.pt')  
