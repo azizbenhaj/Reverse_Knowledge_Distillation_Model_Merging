@@ -102,11 +102,11 @@ class PytorchStanfordCars(VisionDataset):
             )
 
 class Cars:
-    def __init__(self, preprocess, location="/mnt/lts4/scratch/data/stanford_cars", batch_size=64, num_workers=16):
+    def __init__(self, preprocess, batch_size=64, num_workers=16):
         # Data loading code
 
-        train_dataset = PytorchStanfordCars(location, 'train', preprocess, download=False)
-        test_dataset = PytorchStanfordCars(location, 'test', preprocess, download=False)
+        train_dataset = PytorchStanfordCars("/mnt/lts4/scratch/data/stanford_cars", 'train', preprocess, download=False)
+        test_dataset = PytorchStanfordCars("/mnt/lts4/scratch/data/stanford_cars", 'test', preprocess, download=False)
         
         # Rest of your splitting and loading code remains unchanged
 
