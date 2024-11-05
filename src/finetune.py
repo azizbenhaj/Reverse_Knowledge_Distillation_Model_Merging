@@ -30,7 +30,7 @@ def finetune(args):
     wandb.init(
                     # set the wandb project where this run will be logged
                     # Single project for all models
-                    project=f"Finetuning_Teacher_{args.model}",
+                    project=f"Finetuning_{args.model}_(Teacher)",
                      # Unique name for each run
                     name=f"{args.model}_{base_dataset_name}_epochs_{args.epochs}",
 
