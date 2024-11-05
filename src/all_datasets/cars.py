@@ -61,14 +61,14 @@ class Cars:
         test_dataset = StanfordCarsDataset('/mnt/lts4/scratch/data/stanford_cars', 'test', transform=preprocess)
 
         # Split train and test datasets into subsets
-        finetune_train_size = int(0.4 * len(train_dataset))
-        distillation_train_size = int(0.4 * len(train_dataset))
+        finetune_train_size = int(0.04 * len(train_dataset))
+        distillation_train_size = int(0.04 * len(train_dataset))
         merging_train_size = len(train_dataset) - finetune_train_size - distillation_train_size
         finetune_train_set, self.distillation_train_set, self.merging_train_set = random_split(
             train_dataset, [finetune_train_size, distillation_train_size, merging_train_size])
         
-        finetune_test_size = int(0.4 * len(test_dataset))
-        distillation_test_size = int(0.4 * len(test_dataset))
+        finetune_test_size = int(0.04 * len(test_dataset))
+        distillation_test_size = int(0.04 * len(test_dataset))
         merging_test_size = len(test_dataset) - finetune_test_size - distillation_test_size
         finetune_test_set, self.distillation_test_set, self.merging_test_set = random_split(
             test_dataset, [finetune_test_size, distillation_test_size, merging_test_size])
