@@ -34,7 +34,7 @@ class PytorchStanfordCars(VisionDataset):
             self._annotations_mat_path = devkit / "cars_train_annos.mat"
             self._images_base_path = self._base_folder / "cars_train"
         else:
-            self._annotations_mat_path = self._base_folder / "cars_test_annos_withlabels.mat"
+            self._annotations_mat_path = devkit / "cars_test_annos.mat"
             self._images_base_path = self._base_folder / "cars_test"
 
         # Skip download if dataset files are already available
