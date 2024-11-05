@@ -27,12 +27,12 @@ def finetune(args):
 
     assert train_dataset is not None, "Please provide a training dataset."
 
-    """wandb.init(
+    wandb.init(
                     # set the wandb project where this run will be logged
                     # Single project for all models
                     project=f"Finetuning_Teacher_{args.model}",
                      # Unique name for each run
-                    name=f"{args.model}_{base_dataset_name}_epochs_{args.epochs}_{loss_name}",
+                    name=f"{args.model}_{base_dataset_name}_epochs_{args.epochs}",
 
                     # track hyperparameters and run metadata
                     config={
@@ -42,7 +42,7 @@ def finetune(args):
                     "epochs": args.epochs,
                     "label_smoothing": args.ls
                     }
-                )"""
+                )
     
     print("Loading or Building image encoder ?")
     if args.load is not None and args.load.endswith('pt'):
@@ -146,7 +146,7 @@ def finetune(args):
                     f"Loss: {loss.item():.6f}\tData (t) {data_time:.3f}\tBatch (t) {batch_time:.3f}", flush=True
             )
             # Log training loss to wandb
-            #wandb.log({"train_loss": loss.item(), "epoch": epoch, "step": step})
+            wandb.log({"train_loss": loss.item(), "epoch": epoch, "step": step})
 
     print("saving finetuned model ...")
     if args.save is not None: 
@@ -154,23 +154,15 @@ def finetune(args):
         image_encoder.save(ft_path)
 
     # Evaluate
-    #image_encoder = model.image_encoder
-    #evaluate(image_encoder, args)
-
-    # Evaluate
     print("evaluating ...")
     image_encoder = model.image_encoder
     num_batches = len(dataset.test_loader)
     print(num_batches)
     data_loader = get_dataloader(dataset, is_train=False, args=args, image_encoder=None)
-    evaluate(image_encoder, data_loader, args)
+    acc, info =evaluate(image_encoder, data_loader, args)
 
-    """if args.save is not None:
-        zs_path = os.path.join(ckpdir, 'zeroshot.pt')  
-        ft_path = os.path.join(ckpdir, 'finetuned.pt')
-        image_encoder.save(ft_path)
-        return zs_path, ft_path"""
-
+    wandb.log({"test_accuracy": acc})
+    wandb.finish()
 
 if __name__ == '__main__':
     data_location = 'datasets_directory' # The root directory for the datasets

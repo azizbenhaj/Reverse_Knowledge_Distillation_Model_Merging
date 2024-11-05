@@ -84,4 +84,4 @@ def evaluate(image_encoder, data_loader, args):
     else:
         print('Results not saved (to do so, use --results_db to specify a path).')
 
-    return info
+    return results['top1'], info
