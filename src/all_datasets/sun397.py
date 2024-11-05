@@ -42,10 +42,10 @@ class SUN397Dataset(Dataset):
         return image, label
 
 class SUN397:
-    def __init__(self, preprocess: Callable, location: str = '/mnt/lts4/scratch/data/sun397', batch_size: int = 32, num_workers: int = 16):
+    def __init__(self, preprocess: Callable, location: str = os.path.expanduser('~/data'), batch_size: int = 32, num_workers: int = 16):
         # Define train and validation directories
-        traindir = os.path.join(location, 'train')
-        valdir = os.path.join(location, 'val')
+        traindir = os.path.join('/mnt/lts4/scratch/data/sun397', 'train')
+        valdir = os.path.join('/mnt/lts4/scratch/data/sun397', 'val')
 
         # Load the train and test datasets
         train_dataset = SUN397Dataset(traindir, transform=preprocess)
